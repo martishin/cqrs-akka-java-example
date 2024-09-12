@@ -1,0 +1,1 @@
+# cqrs-akka-java-example
