@@ -1,1 +1,1 @@
-# cqrs-akka-java-example
+# cqrs-akka-kotlin-example
