@@ -3,7 +3,7 @@
 This project demonstrates how to build an app that uses **CQRS (Command Query Responsibility Segregation)** and **Event Sourcing** patterns using Kotlin, Akka, and Cassandra.   
 It implements hotel reservation management functionality with separate commands for creating, updating, and deleting reservations, along with querying operations to fetch individual or all reservations.
 
-## How to Run
+## Running locally
 1. Clone the repository
 ```bash
 git clone https://github.com/martishin/cqrs-akka-kotlin-example.git
@@ -18,12 +18,8 @@ docker-compose up cassandra
 ./gradlew run
 ```
 4. The server will be available at http://localhost:8080.
-5. Run tests
-```bash 
-./gradlew test
-```
 
-## Usage
+## Making API Requests
 You can interact with the system using the following curl commands. You can also execute these REST calls using [Postman](https://www.postman.com/).
 * Create a reservation
 ```bash
@@ -58,6 +54,12 @@ curl -X GET http://localhost:8080/reservations
 5. Get the reservation
 ```bash
 curl -X GET http://localhost:8080/reservations/{confirmationNumber}
+```
+
+## Testing
+Run tests
+```bash 
+./gradlew test
 ```
 
 ## Technologies Used
