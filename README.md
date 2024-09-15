@@ -63,7 +63,7 @@ Run tests
 ```
 
 ## Technologies Used
-* [Kotlin](https://kotlinlang.org/) and [coroutines](https://kotlinlang.org/docs/coroutines-overview.html) - modern JVM language with concise syntax and safety features
+* [Kotlin](https://kotlinlang.org/) with [coroutines](https://kotlinlang.org/docs/coroutines-overview.html) - modern JVM language with concise syntax and safety features
 * [Akka](https://akka.io/) - actor-based concurrency framework
 * [Ktor](https://ktor.io/) - Kotlin framework for building asynchronous servers and clients
 * [Apache Cassandra](https://cassandra.apache.org/_/index.html) - distributed NoSQL database for scalability and high availability
