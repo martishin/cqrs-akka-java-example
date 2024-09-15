@@ -35,7 +35,7 @@ curl -X POST http://localhost:8080/reservations \
 
 * Update the reservation
 ```bash
-curl -X PUT http://localhost:8080/reservations/{D6VBJPPJVT} \
+curl -X PUT http://localhost:8080/reservations/{confirmationNumber} \
   -H "Content-Type: application/json" \
   -d '{
     "startDate": "2023-12-01",
