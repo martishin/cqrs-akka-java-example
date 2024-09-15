@@ -1,4 +1,4 @@
-# CQRS Akka Kotlin Example
+# CQRS and Event Sourcing Example with Akka, Kotlin, and Cassandra
 
 This project demonstrates how to build an app that uses **CQRS (Command Query Responsibility Segregation)** and **Event Sourcing** patterns using Kotlin, Akka, and Cassandra.   
 It implements hotel reservation management functionality with separate commands for creating, updating, and deleting reservations, along with querying operations to fetch individual or all reservations.
