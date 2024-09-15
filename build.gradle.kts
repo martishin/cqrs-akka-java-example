@@ -9,6 +9,7 @@
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "2.0.20"
+    kotlin("plugin.serialization") version "2.0.20"
 
     // Apply the application plugin to add support for building a CLI application in Java.
     application
@@ -24,6 +25,8 @@ val akkaVersion = "2.9.5"
 val akkaHttpVersion = "10.6.3"
 val akkaProjectionVersion = "1.5.5"
 val jacksonVersion = "2.17.2"
+val ktorVersion = "2.3.12"
+val kotlinSerializationVersion = "1.7.2"
 
 dependencies {
     // Akka dependencies (using Java/Kotlin-friendly APIs)
@@ -52,14 +55,23 @@ dependencies {
     // Use the JUnit 5 integration.
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.1")
 
-    // Add Jackson dependencies
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    // Add coroutines dependencies
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+
+    // Ktor dependencies
+    implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
+
+    // Kotlin Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:$kotlinSerializationVersion")
 }
 
 application {
     // Define the main class for the application.
-    mainClass.set("com.martishin.cqrsexample.AppKt")
+    mainClass.set("com.martishin.cqrsexample.ApplicationKt")
 }
 
 tasks.named<Test>("test") {
