@@ -53,6 +53,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 
     // Use the JUnit 5 integration.
+    testImplementation("com.typesafe.akka:akka-actor-testkit-typed_2.13:$akkaVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.1")
 
     // Add coroutines dependencies
