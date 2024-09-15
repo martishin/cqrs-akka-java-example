@@ -18,6 +18,10 @@ docker-compose up cassandra
 ./gradlew run
 ```
 4. The server will be available at http://localhost:8080.
+5. Run tests
+```bash 
+./gradlew test
+```
 
 ## Usage
 You can interact with the system using the following curl commands. You can also execute these REST calls using [Postman](https://www.postman.com/).
