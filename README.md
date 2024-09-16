@@ -3,7 +3,7 @@
 This project demonstrates how to build an app that uses **CQRS (Command Query Responsibility Segregation)** and **Event Sourcing** patterns using Kotlin, Ktor, Akka, and Cassandra.   
 It implements hotel reservation management functionality with separate commands for creating, updating, and deleting reservations, along with querying operations to fetch individual or all reservations.
 
-<img src="https://i.imgur.com/NrjBEb1.png" width="550" />
+<img src="https://i.imgur.com/NrjBEb1.png" width="500" />
 
 ## Running locally
 1. Clone the repository
