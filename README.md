@@ -13,7 +13,7 @@ cd cqrs-akka-kotlin-example
 ```
 2. Start the Cassandra database
 ```bash
-docker-compose up cassandra
+docker compose up cassandra
 ```
 3. Build and run the application
 ```bash

@@ -13,21 +13,18 @@ data class Reservation(
     val roomNumber: Int,
     val confirmationNumber: String,
 ) {
-    fun intersect(another: Reservation): Boolean {
-        return this.hotelId == another.hotelId && this.roomNumber == another.roomNumber &&
+    fun intersect(another: Reservation): Boolean =
+        this.hotelId == another.hotelId &&
+            this.roomNumber == another.roomNumber &&
             ((startDate in another.startDate..another.endDate) || (another.startDate in startDate..endDate))
-    }
 
-    override fun equals(other: Any?): Boolean {
-        return when (other) {
+    override fun equals(other: Any?): Boolean =
+        when (other) {
             is Reservation -> this.confirmationNumber == other.confirmationNumber
             else -> false
         }
-    }
 
-    override fun hashCode(): Int {
-        return confirmationNumber.hashCode()
-    }
+    override fun hashCode(): Int = confirmationNumber.hashCode()
 
     companion object {
         fun make(

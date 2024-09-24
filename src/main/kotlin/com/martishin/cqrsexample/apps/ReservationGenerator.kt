@@ -24,7 +24,6 @@ object ReservationGenerator {
                     agent.tell(ManageHotel(hotel))
                 }
 
-                // Generate events in bursts
                 (1..100).forEach { _ ->
                     agent.tell(Generate(10))
                     Thread.sleep(100)

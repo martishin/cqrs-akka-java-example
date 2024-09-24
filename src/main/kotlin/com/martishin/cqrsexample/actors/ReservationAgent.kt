@@ -23,9 +23,6 @@ object ReservationAgent {
     private const val CHANGE_PROB = 0.2
     private val START_DATE: LocalDate = LocalDate.of(2023, 1, 1)
 
-    /**
-     * Generates and sends commands to hotel actors based on probabilities.
-     */
     private fun generateAndSend(
         hotels: List<ActorRef<Command>>,
         state: Map<String, Reservation>,
@@ -33,14 +30,12 @@ object ReservationAgent {
     ) {
         val prob = Random.nextDouble()
         if (prob <= DELETE_PROB && state.isNotEmpty()) {
-            // Generate cancellation
             val confNumbers = state.keys.toList()
             val confNumber = confNumbers.random()
             val reservation = state[confNumber]!!
             val hotel = hotels.find { it.path().name() == reservation.hotelId }
             hotel?.tell(CancelReservation(confNumber, replyTo))
         } else if (prob <= CHANGE_PROB && state.isNotEmpty()) {
-            // Generate a reservation change
             val confNumbers = state.keys.toList()
             val confNumber = confNumbers.random()
             val reservation = state[confNumber]!!
@@ -55,7 +50,6 @@ object ReservationAgent {
             val isDurationChange = Random.nextBoolean()
             val newReservation =
                 if (isDurationChange) {
-                    // Change duration
                     val newLocalStart = startDate.plusDays((Random.nextInt(5) - 2).toLong())
                     val tentativeLocalEnd = endDate.plusDays((Random.nextInt(5) - 2).toLong())
                     val newLocalEnd =
@@ -74,7 +68,6 @@ object ReservationAgent {
                         confirmationNumber,
                     )
                 } else {
-                    // Change room number
                     val newRoomNumber = Random.nextInt(1, 101)
                     Reservation(
                         guestId,
@@ -97,7 +90,6 @@ object ReservationAgent {
                 ),
             )
         } else {
-            // Generate new reservation
             if (hotels.isNotEmpty()) {
                 val hotel = hotels.random()
                 val startDate = START_DATE.plusDays(Random.nextLong(0, 365))
@@ -116,14 +108,11 @@ object ReservationAgent {
         }
     }
 
-    /**
-     * Actor behavior handling hotel protocol messages.
-     */
     private fun active(
         hotels: List<ActorRef<Command>>,
         state: Map<String, Reservation>,
-    ): Behavior<HotelProtocol> {
-        return Behaviors.receive { context, message ->
+    ): Behavior<HotelProtocol> =
+        Behaviors.receive { context, message ->
             val self: ActorRef<HotelProtocol> = context.self
 
             when (message) {
@@ -158,10 +147,6 @@ object ReservationAgent {
                 }
             }
         }
-    }
 
-    /**
-     * Creates the ReservationAgent behavior.
-     */
     fun create(): Behavior<HotelProtocol> = active(emptyList(), emptyMap())
 }

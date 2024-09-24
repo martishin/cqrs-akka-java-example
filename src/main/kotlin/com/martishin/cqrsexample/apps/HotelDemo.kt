@@ -7,8 +7,10 @@ import com.martishin.cqrsexample.actors.Hotel
 import com.martishin.cqrsexample.models.actors.CancelReservation
 import com.martishin.cqrsexample.models.actors.ChangeReservation
 import com.martishin.cqrsexample.models.actors.HotelProtocol
+import com.martishin.cqrsexample.models.actors.MakeReservation
 import java.time.Duration
 import java.time.LocalDate
+import java.util.UUID
 
 object HotelDemo {
     @JvmStatic
@@ -21,11 +23,12 @@ object HotelDemo {
 
         val root: Behavior<Void> =
             Behaviors.setup { ctx ->
-                val logger = ctx.spawn(simpleLogger, "logger") // child actor
+                val logger = ctx.spawn(simpleLogger, "logger")
                 val hotel = ctx.spawn(Hotel.create("testHotel"), "testHotel")
 
-                // Uncomment the following line to make a reservation
-                // hotel.tell(MakeReservation(UUID.randomUUID().toString(), Date.valueOf("2022-07-14"), Date.valueOf("2022-07-21"), 101, logger))
+                hotel.tell(
+                    MakeReservation(UUID.randomUUID().toString(), LocalDate.of(2022, 7, 14), LocalDate.of(2022, 7, 21), 101, logger),
+                )
 
                 hotel.tell(
                     ChangeReservation(

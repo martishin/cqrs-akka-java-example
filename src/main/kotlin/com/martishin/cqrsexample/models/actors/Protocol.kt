@@ -34,40 +34,62 @@ data class CancelReservation(
 ) : Command
 
 @Serializable
-data class GetAllReservations(val replyTo: ActorRef<HotelProtocol>) : Command
+data class GetAllReservations(
+    val replyTo: ActorRef<HotelProtocol>,
+) : Command
 
 @Serializable
-data class GetReservation(val confirmationNumber: String, val replyTo: ActorRef<HotelProtocol>) : Command
+data class GetReservation(
+    val confirmationNumber: String,
+    val replyTo: ActorRef<HotelProtocol>,
+) : Command
 
 @Serializable
-data class AllReservations(val reservations: List<Reservation>) : HotelProtocol
+data class AllReservations(
+    val reservations: List<Reservation>,
+) : HotelProtocol
 
 // Events
 sealed interface Event
 
 @Serializable
-data class ReservationAccepted(val reservation: Reservation) : Event, HotelProtocol
+data class ReservationAccepted(
+    val reservation: Reservation,
+) : Event,
+    HotelProtocol
 
 @Serializable
 data class ReservationUpdated(
     val oldReservation: Reservation,
     val newReservation: Reservation,
-) : Event, HotelProtocol
+) : Event,
+    HotelProtocol
 
 @Serializable
-data class ReservationCanceled(val reservation: Reservation) : Event, HotelProtocol
+data class ReservationCanceled(
+    val reservation: Reservation,
+) : Event,
+    HotelProtocol
 
 // Communication with the "agent"
 @Serializable
-data class CommandFailure(val reason: String) : HotelProtocol
+data class CommandFailure(
+    val reason: String,
+) : HotelProtocol
 
 interface HotelProtocol
 
 @Serializable
-data class ManageHotel(val hotel: ActorRef<Command>) : HotelProtocol
+data class ManageHotel(
+    val hotel: ActorRef<Command>,
+) : HotelProtocol
 
 @Serializable
-data class Generate(val nCommands: Int) : HotelProtocol
+data class Generate(
+    val nCommands: Int,
+) : HotelProtocol
 
 @Serializable
-data class ReservationFound(val reservation: Reservation) : HotelProtocol
+data class ReservationFound(
+    val reservation: Reservation,
+) : HotelProtocol

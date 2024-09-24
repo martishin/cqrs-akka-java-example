@@ -25,14 +25,17 @@ class Hotel(
 ) : EventSourcedBehaviorWithEnforcedReplies<Command, Event, Hotel.State>(
         PersistenceId.ofUniqueId(hotelId),
     ) {
-    data class State(val reservations: Set<Reservation> = emptySet())
+    data class State(
+        val reservations: Set<Reservation> = emptySet(),
+    )
 
     override fun emptyState(): State = State()
 
     override fun commandHandler(): CommandHandlerWithReply<Command, Event, State> {
         val builder = newCommandHandlerWithReplyBuilder()
 
-        builder.forAnyState()
+        builder
+            .forAnyState()
             .onCommand(MakeReservation::class.java) { state, command ->
                 val tentativeReservation =
                     Reservation.make(
@@ -45,7 +48,8 @@ class Hotel(
                 val conflictingReservation = state.reservations.find { it.intersect(tentativeReservation) }
 
                 if (conflictingReservation == null) {
-                    Effect().persist(ReservationAccepted(tentativeReservation))
+                    Effect()
+                        .persist(ReservationAccepted(tentativeReservation))
                         .thenReply(command.replyTo) { _: State -> ReservationAccepted(tentativeReservation) }
                 } else {
                     Effect().reply(
@@ -53,8 +57,7 @@ class Hotel(
                         CommandFailure("Reservation failed: conflict with another reservation"),
                     )
                 }
-            }
-            .onCommand(ChangeReservation::class.java) { state, command ->
+            }.onCommand(ChangeReservation::class.java) { state, command ->
                 val oldReservation = state.reservations.find { it.confirmationNumber == command.confirmationNumber }
                 val newReservation =
                     oldReservation?.copy(
@@ -87,14 +90,15 @@ class Hotel(
                             CommandFailure("Cannot update reservation ${command.confirmationNumber}: conflicting reservations"),
                         )
                     else ->
-                        Effect().persist(reservationUpdatedEvent)
+                        Effect()
+                            .persist(reservationUpdatedEvent)
                             .thenReply(command.replyTo) { _: State -> reservationUpdatedEvent }
                 }
-            }
-            .onCommand(CancelReservation::class.java) { state, command ->
+            }.onCommand(CancelReservation::class.java) { state, command ->
                 val reservation = state.reservations.find { it.confirmationNumber == command.confirmationNumber }
                 if (reservation != null) {
-                    Effect().persist(ReservationCanceled(reservation))
+                    Effect()
+                        .persist(ReservationCanceled(reservation))
                         .thenReply(command.replyTo) { _: State -> ReservationCanceled(reservation) }
                 } else {
                     Effect().reply(
@@ -102,19 +106,16 @@ class Hotel(
                         CommandFailure("Cannot cancel reservation ${command.confirmationNumber}: not found"),
                     )
                 }
-            }
-            .onCommand(GetAllReservations::class.java) { state, command ->
+            }.onCommand(GetAllReservations::class.java) { state, command ->
                 Effect().reply(command.replyTo, AllReservations(state.reservations.toList()))
-            }
-            .onCommand(GetReservation::class.java) { state, command ->
+            }.onCommand(GetReservation::class.java) { state, command ->
                 val reservation = state.reservations.find { it.confirmationNumber == command.confirmationNumber }
                 if (reservation != null) {
                     Effect().reply(command.replyTo, ReservationFound(reservation))
                 } else {
                     Effect().reply(command.replyTo, CommandFailure("Reservation not found"))
                 }
-            }
-            .onAnyCommand { _, _ ->
+            }.onAnyCommand { _, _ ->
                 Effect().none().thenNoReply()
             }
 
@@ -124,21 +125,20 @@ class Hotel(
     override fun eventHandler(): EventHandler<State, Event> {
         val builder = newEventHandlerBuilder()
 
-        builder.forAnyState()
+        builder
+            .forAnyState()
             .onEvent(ReservationAccepted::class.java) { state, event ->
                 val newState = state.copy(reservations = state.reservations + event.reservation)
                 println("state changed: $newState")
                 newState
-            }
-            .onEvent(ReservationUpdated::class.java) { state, event ->
+            }.onEvent(ReservationUpdated::class.java) { state, event ->
                 val newState =
                     state.copy(
                         reservations = state.reservations - event.oldReservation + event.newReservation,
                     )
                 println("state changed: $newState")
                 newState
-            }
-            .onEvent(ReservationCanceled::class.java) { state, event ->
+            }.onEvent(ReservationCanceled::class.java) { state, event ->
                 val newState = state.copy(reservations = state.reservations - event.reservation)
                 println("state changed: $newState")
                 newState

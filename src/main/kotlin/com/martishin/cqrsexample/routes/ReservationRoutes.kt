@@ -29,17 +29,17 @@ import kotlinx.coroutines.future.await
 import java.time.Duration
 
 fun Route.reservationRoutes(hotelActorSystem: ActorSystem<Command>) {
-    // Get all reservations
     get("/reservations") {
         val reply: HotelProtocol =
-            AskPattern.ask(
-                hotelActorSystem,
-                { replyTo: ActorRef<HotelProtocol> ->
-                    GetAllReservations(replyTo)
-                },
-                Duration.ofSeconds(5),
-                hotelActorSystem.scheduler(),
-            ).await()
+            AskPattern
+                .ask(
+                    hotelActorSystem,
+                    { replyTo: ActorRef<HotelProtocol> ->
+                        GetAllReservations(replyTo)
+                    },
+                    Duration.ofSeconds(5),
+                    hotelActorSystem.scheduler(),
+                ).await()
 
         when (reply) {
             is AllReservations -> call.respond(HttpStatusCode.OK, reply.reservations)
@@ -53,14 +53,15 @@ fun Route.reservationRoutes(hotelActorSystem: ActorSystem<Command>) {
                 ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing confirmation number")
 
         val reply: HotelProtocol =
-            AskPattern.ask(
-                hotelActorSystem,
-                { replyTo: ActorRef<HotelProtocol> ->
-                    GetReservation(confirmationNumber, replyTo)
-                },
-                Duration.ofSeconds(5),
-                hotelActorSystem.scheduler(),
-            ).await()
+            AskPattern
+                .ask(
+                    hotelActorSystem,
+                    { replyTo: ActorRef<HotelProtocol> ->
+                        GetReservation(confirmationNumber, replyTo)
+                    },
+                    Duration.ofSeconds(5),
+                    hotelActorSystem.scheduler(),
+                ).await()
 
         when (reply) {
             is ReservationFound -> call.respond(HttpStatusCode.OK, reply.reservation)
@@ -74,20 +75,21 @@ fun Route.reservationRoutes(hotelActorSystem: ActorSystem<Command>) {
             val request = call.receive<MakeReservationRequest>()
 
             val reply: HotelProtocol =
-                AskPattern.ask(
-                    hotelActorSystem,
-                    { replyTo: ActorRef<HotelProtocol> ->
-                        MakeReservation(
-                            guestId = request.guestId,
-                            startDate = request.startDate,
-                            endDate = request.endDate,
-                            roomNumber = request.roomNumber,
-                            replyTo = replyTo,
-                        )
-                    },
-                    Duration.ofSeconds(5),
-                    hotelActorSystem.scheduler(),
-                ).await()
+                AskPattern
+                    .ask(
+                        hotelActorSystem,
+                        { replyTo: ActorRef<HotelProtocol> ->
+                            MakeReservation(
+                                guestId = request.guestId,
+                                startDate = request.startDate,
+                                endDate = request.endDate,
+                                roomNumber = request.roomNumber,
+                                replyTo = replyTo,
+                            )
+                        },
+                        Duration.ofSeconds(5),
+                        hotelActorSystem.scheduler(),
+                    ).await()
 
             when (reply) {
                 is ReservationAccepted -> call.respond(HttpStatusCode.Created, reply)
@@ -104,20 +106,21 @@ fun Route.reservationRoutes(hotelActorSystem: ActorSystem<Command>) {
             val request = call.receive<ChangeReservationRequest>()
 
             val reply: HotelProtocol =
-                AskPattern.ask(
-                    hotelActorSystem,
-                    { replyTo: ActorRef<HotelProtocol> ->
-                        ChangeReservation(
-                            confirmationNumber = confirmationNumber,
-                            startDate = request.startDate,
-                            endDate = request.endDate,
-                            roomNumber = request.roomNumber,
-                            replyTo = replyTo,
-                        )
-                    },
-                    Duration.ofSeconds(5),
-                    hotelActorSystem.scheduler(),
-                ).await()
+                AskPattern
+                    .ask(
+                        hotelActorSystem,
+                        { replyTo: ActorRef<HotelProtocol> ->
+                            ChangeReservation(
+                                confirmationNumber = confirmationNumber,
+                                startDate = request.startDate,
+                                endDate = request.endDate,
+                                roomNumber = request.roomNumber,
+                                replyTo = replyTo,
+                            )
+                        },
+                        Duration.ofSeconds(5),
+                        hotelActorSystem.scheduler(),
+                    ).await()
 
             when (reply) {
                 is ReservationUpdated -> call.respond(HttpStatusCode.OK, reply)
@@ -132,17 +135,18 @@ fun Route.reservationRoutes(hotelActorSystem: ActorSystem<Command>) {
                     ?: return@delete call.respond(HttpStatusCode.BadRequest, "Missing confirmation number")
 
             val reply: HotelProtocol =
-                AskPattern.ask(
-                    hotelActorSystem,
-                    { replyTo: ActorRef<HotelProtocol> ->
-                        CancelReservation(
-                            confirmationNumber = confirmationNumber,
-                            replyTo = replyTo,
-                        )
-                    },
-                    Duration.ofSeconds(5),
-                    hotelActorSystem.scheduler(),
-                ).await()
+                AskPattern
+                    .ask(
+                        hotelActorSystem,
+                        { replyTo: ActorRef<HotelProtocol> ->
+                            CancelReservation(
+                                confirmationNumber = confirmationNumber,
+                                replyTo = replyTo,
+                            )
+                        },
+                        Duration.ofSeconds(5),
+                        hotelActorSystem.scheduler(),
+                    ).await()
 
             when (reply) {
                 is ReservationCanceled -> call.respond(HttpStatusCode.OK, reply)

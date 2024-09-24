@@ -20,23 +20,18 @@ class KotlinxJsonSerializer : SerializerWithStringManifest() {
                 }
         }
 
-    override fun identifier(): Int {
-        return 1234567
-    }
+    override fun identifier(): Int = 1234567
 
-    override fun manifest(o: Any): String {
-        return o::class.qualifiedName ?: throw IllegalArgumentException("Unknown class: $o")
-    }
+    override fun manifest(o: Any): String = o::class.qualifiedName ?: throw IllegalArgumentException("Unknown class: $o")
 
-    override fun toBinary(o: Any): ByteArray {
-        return when (o) {
+    override fun toBinary(o: Any): ByteArray =
+        when (o) {
             is MakeReservation -> json.encodeToString(MakeReservation.serializer(), o).toByteArray()
             is ReservationAccepted -> json.encodeToString(ReservationAccepted.serializer(), o).toByteArray()
             is ReservationUpdated -> json.encodeToString(ReservationUpdated.serializer(), o).toByteArray()
             is ReservationCanceled -> json.encodeToString(ReservationCanceled.serializer(), o).toByteArray()
             else -> throw IllegalArgumentException("Unknown object type: ${o::class}")
         }
-    }
 
     override fun fromBinary(
         bytes: ByteArray,
